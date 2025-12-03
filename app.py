@@ -14,7 +14,7 @@ st.title("🎰 DVinci MSC Raffle System")
 
 st.subheader("⚙ Admin Controls")
 
-col1 = st.columns(2)
+col1 = st.columns(1)
 
 
 with col1:
