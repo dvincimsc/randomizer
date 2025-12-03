@@ -24,7 +24,7 @@ if reset_all:
     pd.DataFrame(columns=["CONTROL NO.", "FULL NAME", "POSITION", "REGION/SOC", "HUB"]) \
         .to_excel("winner_history.xlsx", index=False)
 
-    st.success("Everything has been fully reset!")
+    st.success("Everything has been fully reset! Please reload the website.")
     st.stop()  # Stop app so tables refresh
 
 # ---------------------------------------------------------
