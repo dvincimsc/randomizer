@@ -8,13 +8,53 @@ st.set_page_config(page_title="DVMSC Raffle", page_icon="🎰", layout="wide")
 
 st.title("🎰 DVinci MSC Raffle System")
 
+# ---------------------------------------------------------
+# 🔁 RESTORE BUTTON (Top of the App)
+# ---------------------------------------------------------
+
+st.subheader("⚙ Admin Controls")
+
+col1, col2 = st.columns(2)
+
+with col1:
+    reset_participants = st.button("♻ Restore Participants")
+
+with col2:
+    reset_all = st.button("🧹 Reset EVERYTHING (Participants + Winners)")
+
+# Restore Logic
+if reset_participants:
+    if os.path.exists("original_participants.xlsx"):
+        original = pd.read_excel("original_participants.xlsx")
+        original.to_excel("participants.xlsx", index=False)
+        st.success("Participants restored to original list!")
+    else:
+        st.error("File 'original_participants.xlsx' not found!")
+
+if reset_all:
+    # Restore participant list
+    if os.path.exists("original_participants.xlsx"):
+        original = pd.read_excel("original_participants.xlsx")
+        original.to_excel("participants.xlsx", index=False)
+    else:
+        st.error("File 'original_participants.xlsx' not found!")
+
+    # Clear winner history
+    pd.DataFrame(columns=["CONTROL NO.", "FULL NAME", "POSITION", "REGION/SOC", "HUB"]) \
+        .to_excel("winner_history.xlsx", index=False)
+
+    st.success("Everything has been fully reset!")
+    st.stop()  # Stop app so tables refresh
+
+# ---------------------------------------------------------
 # Load Participant Data (NO duplicate removal)
+# ---------------------------------------------------------
+
 @st.cache_data
 def load_data():
     df = pd.read_excel("participants.xlsx")
     return df
 
-# Save updated participant list
 def save_data(df):
     df.to_excel("participants.xlsx", index=False)
 
@@ -31,29 +71,33 @@ def save_winner_history(df):
 df = load_data()
 winners_df = load_winner_history()
 
-# REMOVE winners from ACTIVE LIST (based on FULL NAME)
+# Remove winners based on FULL NAME
 if not winners_df.empty:
     df = df[~df["FULL NAME"].isin(winners_df["FULL NAME"])]
 
-# 📌 LIVE PARTICIPANT LIST VIEWER (with duplicates intact)
+# ---------------------------------------------------------
+# VIEWERS
+# ---------------------------------------------------------
+
 with st.expander("📋 View Active Participants (Live List)"):
     st.dataframe(df.reset_index(drop=True), use_container_width=True)
 
-# 📌 WINNER HISTORY LIST
 with st.expander("🏆 View Winner History"):
     st.dataframe(winners_df.reset_index(drop=True), use_container_width=True)
 
+# ---------------------------------------------------------
+# RANDOMIZER
+# ---------------------------------------------------------
 
 slot_placeholder = st.empty()
 
-# RANDOMIZER BUTTON
 if st.button("🎲 Start Randomizer", use_container_width=True):
 
     if df.empty:
         st.error("No participants left!")
         st.stop()
 
-    # Slot-machine rolling animation
+    # Slot-machine animation
     for _ in range(40):
         random_row = df.sample(1).iloc[0]
         slot_placeholder.markdown(
@@ -76,11 +120,11 @@ if st.button("🎲 Start Randomizer", use_container_width=True):
     st.write(f"**REGION/SOC:** {winner['REGION/SOC']}")
     st.write(f"**HUB:** {winner['HUB']}")
 
-    # Save winner to winner_history.xlsx
+    # Save to winner history
     winners_df = pd.concat([winners_df, pd.DataFrame([winner])], ignore_index=True)
     save_winner_history(winners_df)
 
-    # Remove ALL entries of winner from active list (so they cannot win again)
+    # Remove the winner from participants
     df = df[df["FULL NAME"] != winner["FULL NAME"]]
     save_data(df)
 
