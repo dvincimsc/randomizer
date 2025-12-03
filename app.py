@@ -14,22 +14,20 @@ st.title("🎰 DVinci MSC Raffle System")
 
 st.subheader("⚙ Admin Controls")
 
-col1, col2 = st.columns(2)
+col1 = st.columns(2)
+
 
 with col1:
-    reset_participants = st.button("♻ Restore Participants")
-
-with col2:
     reset_all = st.button("🧹 Reset EVERYTHING (Participants + Winners)")
 
-# Restore Logic
-if reset_participants:
-    if os.path.exists("original_participants.xlsx"):
-        original = pd.read_excel("original_participants.xlsx")
-        original.to_excel("participants.xlsx", index=False)
-        st.success("Participants restored to original list!")
-    else:
-        st.error("File 'original_participants.xlsx' not found!")
+# # Restore Logic
+# if reset_participants:
+#     if os.path.exists("original_participants.xlsx"):
+#         original = pd.read_excel("original_participants.xlsx")
+#         original.to_excel("participants.xlsx", index=False)
+#         st.success("Participants restored to original list!")
+#     else:
+#         st.error("File 'original_participants.xlsx' not found!")
 
 if reset_all:
     # Restore participant list
