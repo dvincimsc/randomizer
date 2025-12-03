@@ -79,17 +79,16 @@ if st.button("🎲 Start Randomizer", use_container_width=True):
         st.stop()
 
     # Slot-machine animation
-    for _ in range(40):
+    iterations = 120
+    for i in range(iterations):
         random_row = df.sample(1).iloc[0]
         slot_placeholder.markdown(
-            f"""
-            <h1 style='text-align:center; font-size:60px;'>
-                {random_row['CONTROL NO.']}
-            </h1>
-            """,
+            f"<h1 style='text-align:center; font-size:60px;'>{random_row['CONTROL NO.']}</h1>",
             unsafe_allow_html=True
         )
-        time.sleep(0.05)
+        # Gradually increase sleep to slow down
+        time.sleep(0.005 + (i/iterations)*0.2)
+
 
     # FINAL WINNER
     winner = random_row
