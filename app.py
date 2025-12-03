@@ -8,26 +8,9 @@ st.set_page_config(page_title="DVMSC Raffle", page_icon="🎰", layout="wide")
 
 st.title("🎰 DVinci MSC Raffle System")
 
-# ---------------------------------------------------------
-# 🔁 RESTORE BUTTON (Top of the App)
-# ---------------------------------------------------------
 
-st.subheader("⚙ Admin Controls")
+reset_all = st.button("🧹 Reset EVERYTHING (Participants + Winners)")
 
-col1 = st.columns(1)
-
-
-with col1:
-    reset_all = st.button("🧹 Reset EVERYTHING (Participants + Winners)")
-
-# # Restore Logic
-# if reset_participants:
-#     if os.path.exists("original_participants.xlsx"):
-#         original = pd.read_excel("original_participants.xlsx")
-#         original.to_excel("participants.xlsx", index=False)
-#         st.success("Participants restored to original list!")
-#     else:
-#         st.error("File 'original_participants.xlsx' not found!")
 
 if reset_all:
     # Restore participant list
